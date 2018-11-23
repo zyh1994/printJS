@@ -1,8 +1,10 @@
 ﻿$(function () {
-    var MyIndex, number, modelArr, inputArr = [];
+    var MyIndex, number,showNum, modelArr, inputArr = [];
     $.getJSON("data/index.json", "", function (data) {
         //each循环 使用$.each方法遍历返回的数据date
         number = data.order_no;
+		showNum=data.order_no;
+		
         $("input[name='order_no']").val("NO." + number);
 
     });
@@ -35,13 +37,16 @@
         // totalNum += parseInt(MyIndex["size"]);
         inputArr.push(MyIndex);//加入打印队列
         alert("保存成功！")
+		showNum+=MyIndex["size"]*2;
+		$("input[name='order_no']").val("NO." + showNum);
+		//console.log(inputArr);
     });
     $("#explore").click(function () {
         if (number)
             saveToFile("index.json", {'order_no': number});
 
     });
-    $("#print-c").click(function () {
+    $("#print").click(function () {
         if (!MyIndex) {
             alert("请先保存，然后在打印数据");
             return;
@@ -49,7 +54,7 @@
             alert("模板为载入，请等待。。");
             return;
         }
-        console.log(inputArr);
+        //console.log(inputArr);
         myPrint(inputArr);
         MyIndex=null;
         inputArr.length=0;
@@ -71,7 +76,11 @@
                             td = $("<td></td>");
                             var val=inputValue.split(".");
                             if(val.length===2){
-                                inputValue=val[0]+"."+(parseInt(val[1])+i+innerindex+1-printIndexs.length);
+                                //inputValue=val[0]+"."+(parseInt(val[1])+i+innerindex+1-printIndexs.length);
+								inputValue=val[0]+"."+(parseInt(val[1])+innerindex);
+								//console.log(i);
+								inputValue=val[0]+"."+(number+i-printIndexs.length+innerindex+1);
+								//console.log(number+i-printIndexs.length+innerindex+1);
                             }
                             td.html(inputValue);
                             tr.append(td);
@@ -85,6 +94,7 @@
                     table.append(tr);
                 });
                 return table.jqprint();//是就继续，否就回滚
+				//return true;
             }
     }
     var test=function () {
